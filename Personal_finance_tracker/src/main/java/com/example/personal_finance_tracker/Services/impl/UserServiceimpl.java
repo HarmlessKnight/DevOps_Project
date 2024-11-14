@@ -4,13 +4,10 @@ import com.example.personal_finance_tracker.DTOs.UserDTO;
 import com.example.personal_finance_tracker.Exceptions.InvalidUserException;
 import com.example.personal_finance_tracker.Models.Role;
 import com.example.personal_finance_tracker.Models.User;
-import com.example.personal_finance_tracker.Repositories.AccountRepository;
 import com.example.personal_finance_tracker.Repositories.RoleRepository;
-import com.example.personal_finance_tracker.Repositories.TransactionsRepository;
 import com.example.personal_finance_tracker.Repositories.UserRepository;
 import com.example.personal_finance_tracker.Services.UserService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -124,6 +121,11 @@ public class UserServiceimpl implements UserService {
         } catch (Exception e) {
             return "Failed to login user: " + userdto.getUsername() + ". Error: " + e.getMessage();
         }
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow();
     }
 
 

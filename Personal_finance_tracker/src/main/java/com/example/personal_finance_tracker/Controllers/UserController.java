@@ -25,6 +25,7 @@ public class UserController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public List<UserDTO> getAllUsers() {
         List<User> users = userService.getAllUsers();
         return users.stream()
@@ -33,6 +34,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id);
         if (user != null) {
@@ -42,6 +44,7 @@ public class UserController {
     }
 
     @GetMapping("/email/{email}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
         User user = userService.getUserByEmail(email);
         if (user != null) {
@@ -51,12 +54,14 @@ public class UserController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDTO> addUser(@RequestBody UserDTO userDTO) {
         User user = userService.addUser(userDTO);
         return ResponseEntity.ok(UserMapper.toDTO(user));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
         User user = userService.updateUser(id, userDTO);
         if (user != null) {
@@ -73,6 +78,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/role")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Set<Role>> getUserRole(@PathVariable Long id) {
         User user = userService.getUserById(id);
         if (user != null) {

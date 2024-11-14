@@ -23,4 +23,6 @@ public interface AccountService {
     Accounts updateAccount(Accounts account);
 
     Accounts findById(Long accountId);
+
+    List<Accounts> getAccountsWithUserId(Long id);
 }

@@ -106,5 +106,10 @@ public class AccountServiceimpl implements AccountService {
         return account;
     }
 
+    @Override
+    public List<Accounts> getAccountsWithUserId(Long id) {
+        return accountRepository.findByUser_Id(id);
+    }
+
 
 }

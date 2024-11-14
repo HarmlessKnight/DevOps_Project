@@ -37,7 +37,6 @@ public class Accounts {
     public Accounts() {}
 
 
-
     public Long getId() {
         return id;
     }
