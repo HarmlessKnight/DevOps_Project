@@ -16,10 +16,17 @@ export default function LoginComponent() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/api/login', {
+      const response = await axios.post('http://localhost/api/login', {
         username,
         password,
-      }, { withCredentials: true });
+      }, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
+      
       
 
       if (response.status === 200) {

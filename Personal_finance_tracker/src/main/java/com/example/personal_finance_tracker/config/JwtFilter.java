@@ -34,6 +34,8 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = extractTokenFromRequest(request);
 
+        System.out.println("JWT Filter - Request URI: " + request.getRequestURI());
+
         // Check if token is present
         if (token != null) {
             // Check if token is blacklisted

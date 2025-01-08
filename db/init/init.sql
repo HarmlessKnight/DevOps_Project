@@ -18,6 +18,21 @@
 --
 -- Table structure for table `accounts`
 --
+USE financetrackerschema;
+-- Create a user if it doesn't already exist
+DELIMITER //
+CREATE PROCEDURE create_user_if_not_exists()
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM mysql.user WHERE user = 'secondUser') THEN
+        CREATE USER 'secondUser'@'%' IDENTIFIED BY 'Neshtorandom268#';
+        GRANT ALL PRIVILEGES ON financetrackerschema.* TO 'secondUser'@'%';
+        FLUSH PRIVILEGES;
+    END IF;
+END//
+DELIMITER ;
+CALL create_user_if_not_exists();
+DROP PROCEDURE create_user_if_not_exists;
+
 
 DROP TABLE IF EXISTS `accounts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

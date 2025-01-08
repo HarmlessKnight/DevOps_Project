@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: database
+  namespace: pftnamespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: database
+  template:
+    metadata:
+      labels:
+        app: database
+    spec:
+      containers:
+      - name: database
+        image: matejgorjanov201536/personal_finance_tracker:mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: password 
+        - name: MYSQL_DATABASE
+          value: financetrackerschema 
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: second-user-secret
+              key: username 
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: second-user-secret
+              key: password 
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql 
+        - name: init-scripts
+          mountPath: /docker-entrypoint-initdb.d 
+      volumes:
+      - name: mysql-data
+        persistentVolumeClaim:
+          claimName: devopsproject-mysql-pvc 
+      - name: init-scripts
+        configMap:
+          name: mysql-init-scripts

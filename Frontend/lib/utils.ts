@@ -61,7 +61,7 @@ export const logoutApi = async () => {
 
 
 export const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost/api',
   headers: {
     'Content-Type': 'application/json',
   },

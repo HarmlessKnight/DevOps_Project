@@ -1,10 +1,10 @@
 package com.example.personal_finance_tracker.config;
 
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -19,11 +19,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import java.time.Duration;
 import java.util.Arrays;
 
-import static org.springframework.security.config.Customizer.withDefaults;
+
 
 @Configuration
 @EnableWebSecurity
@@ -38,27 +37,42 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-
-        httpSecurity.csrf(csrf -> csrf.disable()).cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
-                    @Override
-                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                        CorsConfiguration corsConfiguration = new CorsConfiguration();
-                        corsConfiguration.setAllowCredentials(true); // Allows sending credentials with requests
-                        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); //frontend's origin
-                        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Allowed HTTP methods
-                        corsConfiguration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization")); // Allowed headers (adjust as needed)
-                        corsConfiguration.setMaxAge(Duration.ofMinutes(10L)); // Cache preflight response for 10 minutes
-                        return corsConfiguration;
-                    }
+        httpSecurity
+                .csrf(csrf -> csrf.disable())
+                .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
+                    CorsConfiguration corsConfiguration = new CorsConfiguration();
+                    corsConfiguration.setAllowCredentials(true);
+                    corsConfiguration.setAllowedOrigins(Arrays.asList(
+                            "http://localhost",
+                            "http://localhost:8080",
+                            "http://localhost:80"
+                    ));
+                    corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    corsConfiguration.setAllowedHeaders(Arrays.asList(
+                            "Content-Type",
+                            "Authorization",
+                            "Access-Control-Allow-Origin",
+                            "Access-Control-Allow-Credentials"
+                    ));
+                    corsConfiguration.setExposedHeaders(Arrays.asList(
+                            "Authorization",
+                            "Access-Control-Allow-Origin",
+                            "Access-Control-Allow-Credentials"
+                    ));
+                    corsConfiguration.setMaxAge(Duration.ofMinutes(10L));
+                    return corsConfiguration;
                 }))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Allow OPTIONS
                         .requestMatchers("/api/login", "/api/register").permitAll()
                         .anyRequest().authenticated())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless session (JWT)
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
+
 
     @Bean
     public AuthenticationProvider authenticationProvider() {

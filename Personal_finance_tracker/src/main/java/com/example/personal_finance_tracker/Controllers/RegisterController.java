@@ -61,6 +61,7 @@ public class RegisterController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody UserDTO userdto) {
+        System.out.println("Login attempt for user: " + userdto.getUsername());
         Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
         if (currentAuth != null && currentAuth.isAuthenticated() && !(currentAuth instanceof AnonymousAuthenticationToken)) {
             Map<String, String> response = new HashMap<>();

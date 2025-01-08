@@ -24,7 +24,7 @@ export default function Component() {
     setSuccess('');
 
     try {
-      const response = await axios.post('http://localhost:8080/api/register', {
+      const response = await axios.post('http://localhost/api/register', {
         username,
         email,
         password,
