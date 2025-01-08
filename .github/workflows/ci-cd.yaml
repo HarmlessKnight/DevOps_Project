@@ -14,8 +14,8 @@ jobs:
 
       - name: Debug - Print secrets (Do not expose sensitive data)
         run: |
-          echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}"
-          echo "DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}"
+          echo "DOCKER_USERNAME=${{ secrets.DockerHub.DOCKER_USERNAME }}"
+          echo "DOCKER_PASSWORD=${{ secrets.DockerHub.DOCKER_PASSWORD }}"
 
       
       - name: Log in to DockerHub
