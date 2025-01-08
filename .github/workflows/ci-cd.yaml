@@ -14,12 +14,12 @@ jobs:
 
       - name: Debug - Print secrets (Do not expose sensitive data)
         run: |
-          echo "DOCKER_USERNAME=${{ secrets.DockerHub.DOCKER_USERNAME }}"
-          echo "DOCKER_PASSWORD=${{ secrets.DockerHub.DOCKER_PASSWORD }}"
+          echo "DOCKERHUB_USERNAME=${{ secrets.DockerHub.DOCKERHUB_USERNAME }}"
+          echo "DOCKERHUB_PASSWORD=${{ secrets.DockerHub.DOCKERHUB_PASSWORD }}"
 
       
       - name: Log in to DockerHub
-        run: echo "${{ secrets.DockerHub.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DockerHub.DOCKER_USERNAME }}" --password-stdin
+        run: echo "${{ secrets.DockerHub.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DockerHub.DOCKERHUB_USERNAME }}" --password-stdin
 
 
       - name: Build and push Docker images
