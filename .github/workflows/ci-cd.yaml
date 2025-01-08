@@ -11,14 +11,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Log in to DockerHub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
+      
       - name: Debug - Check secrets
         run: |
           echo "DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}"
           echo "DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}"
+      
+      - name: Log in to DockerHub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build and push Docker images
         run: |
