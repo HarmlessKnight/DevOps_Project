@@ -1,0 +1,66 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to DockerHub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build and push Docker images
+        run: |
+          docker build -t matejgorjanov201536/personal_finance_tracker:frontend .
+          docker push matejgorjanov201536/personal_finance_tracker:frontend
+
+          docker build -t matejgorjanov201536/personal_finance_tracker:backend .
+          docker push matejgorjanov201536/personal_finance_tracker:backend
+
+          docker build -t matejgorjanov201536/personal_finance_tracker:mysql .
+          docker push matejgorjanov201536/personal_finance_tracker:mysql
+
+  deploy-to-kubernetes:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.28.0'
+
+      - name: Configure kubeconfig
+        run: |
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f k8s/namespace.yaml
+          
+          # Apply backend
+          kubectl apply -f k8s/backend-deployment.yaml
+          kubectl apply -f k8s/backend-service.yaml
+          
+          # Apply database (MySQL)
+          kubectl apply -f k8s/database-deployment.yaml
+          kubectl apply -f k8s/database-service.yaml
+          
+          # Apply frontend
+          kubectl apply -f k8s/frontend-deployment.yaml
+          kubectl apply -f k8s/frontend-service.yaml
+          
+          # Apply ingress
+          kubectl apply -f k8s/ingress.yaml
+          
+          # Optional: Apply any other relevant files (e.g., policy, PV/PVC, secrets)
+          kubectl apply -f k8s/ingress-controller-service.yaml
+          kubectl apply -f k8s/Policy.yaml
+          kubectl apply -f k8s/PV-database.yaml
+          kubectl apply -f k8s/PVC-database.yaml
+          kubectl apply -f k8s/Secrets.yaml
