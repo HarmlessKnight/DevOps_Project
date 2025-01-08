@@ -17,13 +17,13 @@ jobs:
 
       - name: Build and push Docker images
         run: |
-          docker build -t matejgorjanov201536/personal_finance_tracker:frontend .
+          docker build -t matejgorjanov201536/personal_finance_tracker:frontend -f Frontend/Dockerfile ./Frontend
           docker push matejgorjanov201536/personal_finance_tracker:frontend
 
-          docker build -t matejgorjanov201536/personal_finance_tracker:backend .
+          docker build -t matejgorjanov201536/personal_finance_tracker:backend -f Personal_finance_tracker/Dockerfile ./Personal_finance_tracker
           docker push matejgorjanov201536/personal_finance_tracker:backend
 
-          docker build -t matejgorjanov201536/personal_finance_tracker:mysql .
+          docker build -t matejgorjanov201536/personal_finance_tracker:mysql -f db/Dockerfile ./db
           docker push matejgorjanov201536/personal_finance_tracker:mysql
 
   deploy-to-kubernetes:
@@ -37,7 +37,9 @@ jobs:
 
       - name: Configure kubeconfig
         run: |
+          mkdir -p $HOME/.kube
           echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
 
       - name: Deploy to Kubernetes
         run: |
@@ -58,7 +60,7 @@ jobs:
           # Apply ingress
           kubectl apply -f k8s/ingress.yaml
           
-          # Optional: Apply any other relevant files (e.g., policy, PV/PVC, secrets)
+          # Optional: Apply other configurations
           kubectl apply -f k8s/ingress-controller-service.yaml
           kubectl apply -f k8s/Policy.yaml
           kubectl apply -f k8s/PV-database.yaml
