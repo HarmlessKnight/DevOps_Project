@@ -11,6 +11,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Debug - Print secrets (Do not expose sensitive data)
+        run: |
+          echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}"
+          echo "DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}"
+
       
       - name: Log in to DockerHub
         run: echo "${{ secrets.DockerHub.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DockerHub.DOCKER_USERNAME }}" --password-stdin
