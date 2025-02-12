@@ -1,4 +1,4 @@
-# Finance Tracking App
+# Finance Tracking Application
 
 ## Description
 
