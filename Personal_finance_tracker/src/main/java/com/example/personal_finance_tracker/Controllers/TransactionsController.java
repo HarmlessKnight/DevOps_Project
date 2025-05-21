@@ -11,10 +11,13 @@ import com.example.personal_finance_tracker.Repositories.UserRepository;
 import com.example.personal_finance_tracker.Services.AccountService;
 import com.example.personal_finance_tracker.Services.TransactionService;
 import com.example.personal_finance_tracker.Services.UserService;
+import com.example.personal_finance_tracker.config.SecurityUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.personal_finance_tracker.Mappers.TransactionMapper;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,17 +42,23 @@ public class TransactionsController {
     @GetMapping("/account/{accountId}")
     public ResponseEntity<List<TransactionDTO>> getTransactionsByAccountId(@PathVariable Long accountId) {
 
+        if (!SecurityUtils.isAuthenticated())
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.emptyList());
+        }
 
         Accounts account = accountService.findById(accountId);
 
+        SecurityUtils.CheckOwnership(account.getUser().getId());
+
         List<Transactions> transactions = transactionsService.getTransactionsWithAccountId(accountId);
 
-        List<TransactionDTO> transactionDTOs = transactions.stream()
-                .map(TransactionMapper::toDTO)
+        List<TransactionDTO> transactionDTOs = transactions.stream().map(TransactionMapper::toDTO)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(transactionDTOs);
     }
+
 
 }
 

@@ -7,6 +7,7 @@ import com.example.personal_finance_tracker.Models.User;
 import com.example.personal_finance_tracker.Repositories.RoleRepository;
 import com.example.personal_finance_tracker.Repositories.UserRepository;
 import com.example.personal_finance_tracker.Services.UserService;
+import com.example.personal_finance_tracker.Exceptions.InvalidUserException;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -125,7 +126,7 @@ public class UserServiceimpl implements UserService {
 
     @Override
     public User getUserByUsername(String username) {
-        return userRepository.findByUsername(username).orElseThrow();
+        return userRepository.findByUsername(username).orElseThrow(() -> new InvalidUserException("User name not found: " + username));
     }
 
 

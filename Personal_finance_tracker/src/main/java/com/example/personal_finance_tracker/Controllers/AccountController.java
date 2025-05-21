@@ -8,12 +8,12 @@ import com.example.personal_finance_tracker.Repositories.AccountRepository;
 import com.example.personal_finance_tracker.Repositories.UserRepository;
 import com.example.personal_finance_tracker.Services.AccountService;
 import com.example.personal_finance_tracker.Services.UserService;
+import com.example.personal_finance_tracker.config.SecurityUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -34,21 +34,13 @@ public class AccountController {
     }
 
 
-    @GetMapping
-    public List<AccountDTO> getAllAccounts() {
-        return accountService.getAllAccounts().stream()
-                .map(AccountMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<AccountDTO> getAccountById(@PathVariable Long id) {
-        Optional<Accounts> accountOptional = accountRepository.findById(id);
-        if (accountOptional.isPresent()) {
-            return ResponseEntity.ok(AccountMapper.toDTO(accountOptional.get()));
-        } else {
-            throw new InvalidAccountException("Account not found with id " + id);
-        }
+
+        Accounts account = accountService.findById(id);
+        SecurityUtils.CheckOwnership(account.getUser().getId());
+        return ResponseEntity.ok(AccountMapper.toDTO(account));
+
     }
 
     @PostMapping("/NewAccount")
@@ -64,11 +56,10 @@ public class AccountController {
         return ResponseEntity.ok(AccountMapper.toDTO(account));
     }
 
-    @GetMapping("/user/{userId}")
-    public List<AccountDTO> getAccountsByUserId(@PathVariable Long userId) {
-        return accountRepository.findByUser_Id(userId).stream()
-                .map(AccountMapper::toDTO)
-                .collect(Collectors.toList());
+    @GetMapping()
+    public List<AccountDTO> getUserAccounts() {
+        Long userId = SecurityUtils.getCurrentUserId();
+        return accountService.getAccountsWithUserId(userId).stream().map(AccountMapper::toDTO).collect(Collectors.toList());
     }
 
 

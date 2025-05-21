@@ -6,19 +6,19 @@ services:
     ports:
       - "8080:8080"
     environment:
-      DB_HOST: database
+      DB_HOST: mysql-db
       DB_PORT: 3306
       DB_USERNAME: root
       DB_PASSWORD: Neshtorandom268#
     depends_on:
-      database:
+      mysql-db:
         condition: service_healthy
     restart: always
     networks:
       - my_network  
 
-  database:
-    image: mysql:8.0
+  mysql-db:
+    image: matejgorjanov201536/personal_finance_tracker:mysql
     ports:
       - "3306:3306"
     environment:

@@ -45,7 +45,8 @@ public class SecurityConfig {
                     corsConfiguration.setAllowedOrigins(Arrays.asList(
                             "http://localhost",
                             "http://localhost:8080",
-                            "http://localhost:80"
+                            "http://localhost:80",
+                            "http://localhost:3000"
                     ));
                     corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     corsConfiguration.setAllowedHeaders(Arrays.asList(

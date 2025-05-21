@@ -46,7 +46,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             String username = jwtService.extractUsername(token);
 
-            // If the token is not blacklisted and username is extracted
+            // If the token is not blacklisted, username is extracted
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = context.getBean(MyUserDetailsService.class).loadUserByUsername(username);
 

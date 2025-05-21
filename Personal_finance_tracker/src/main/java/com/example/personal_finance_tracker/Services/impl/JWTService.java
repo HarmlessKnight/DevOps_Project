@@ -1,5 +1,6 @@
 package com.example.personal_finance_tracker.Services.impl;
 
+import com.example.personal_finance_tracker.Models.UserPrincipal;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -28,11 +29,14 @@ public class JWTService {
     }
 
     public String generateToken(UserDetails userDetails) {
+        UserPrincipal customUser = (UserPrincipal) userDetails;
+
         Map<String, Object> claims = new HashMap<>();
 
         claims.put("roles", userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList()));
+        claims.put("userId",customUser.getId());
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -51,6 +55,20 @@ public class JWTService {
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public Long extractUserId(String token) {
+        Claims claims = extractAllClaims(token);
+
+        Object idObject = claims.get("userId");
+
+        if (idObject instanceof Integer) {
+            return((Integer) idObject).longValue();
+        } else if (idObject instanceof Long) {
+            return (Long) idObject;
+        }else {
+            return Long.parseLong(idObject.toString());
+        }
     }
 
     public List<String> extractRoles(String token) {
