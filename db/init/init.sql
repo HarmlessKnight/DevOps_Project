@@ -18,6 +18,7 @@
 --
 -- Table structure for table `accounts`
 --
+CREATE DATABASE IF NOT EXISTS financetrackerschema;
 USE financetrackerschema;
 -- Create a user if it doesn't already exist
 DELIMITER //
