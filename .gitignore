@@ -1,0 +1,110 @@
+# =============================
+# OS FILES
+# =============================
+.DS_Store
+Thumbs.db
+
+# =============================
+# ENVIRONMENT / SECRETS
+# =============================
+.env
+.env.*
+*.env.local
+*.secret
+secrets/
+keys/
+*.pem
+*.key
+*.crt
+*.p12
+*.keystore
+*.jks
+
+# Spring Boot secret configs
+application.properties
+application.yml
+application.yaml
+
+# Kubernetes secret files
+k8s/secrets.yaml
+k8s/*secret*.yaml
+helm/*/values.local.yaml
+
+# =============================
+# DATABASE / MYSQL
+# =============================
+*.sql               # local SQL dumps
+*.sql.gz
+mysql-data/         # local bind-mounted database
+db-data/
+
+# =============================
+# LOGS
+# =============================
+logs/
+*.log
+spring.log
+debug.log
+npm-debug.log*
+yarn*.log
+
+# =============================
+# SPRING BOOT (Java)
+# =============================
+target/
+build/
+out/
+bin/
+*.class
+*.jar
+*.war
+*.iml
+
+# =============================
+# NEXT.JS (React)
+# =============================
+.next/
+node_modules/
+build/
+dist/
+.cache/
+package-lock.json
+
+# Next.js local env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# =============================
+# DOCKER
+# =============================
+docker-compose.override.yml
+docker-compose.local.yml
+*.pid
+*.tar  # exported docker images
+
+# =============================
+# KUBERNETES
+# =============================
+# Generated manifests or local-only configs
+k8s/generated/
+k8s/local/
+*.kubeconfig
+.kube/
+
+# =============================
+# IDE / EDITORS
+# =============================
+.vscode/
+.idea/
+*.iml
+*.swp
+*.swo
+
+# =============================
+# PYTHON (if using scripts)
+# =============================
+__pycache__/
+*.pyc
+venv/
