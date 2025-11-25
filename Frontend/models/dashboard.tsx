@@ -1,5 +1,5 @@
 export interface Role {
-    authority: string;
+    authority: string; // should be enum or smth else
   }
   
 export interface Transaction {

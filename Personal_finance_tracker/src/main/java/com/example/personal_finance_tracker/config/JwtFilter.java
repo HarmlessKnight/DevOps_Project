@@ -25,34 +25,40 @@ public class JwtFilter extends OncePerRequestFilter {
     private JWTService jwtService;
 
     @Autowired
-    private ApplicationContext context;
+    private MyUserDetailsService userDetailsService;
 
     @Autowired
     private TokenBlacklistService tokenBlacklistService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
+
         String token = extractTokenFromRequest(request);
 
         System.out.println("JWT Filter - Request URI: " + request.getRequestURI());
 
-        // Check if token is present
         if (token != null) {
-            // Check if token is blacklisted
             if (tokenBlacklistService.isTokenBlacklisted(token)) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token has been blacklisted");
                 return;
             }
 
-            String username = jwtService.extractUsername(token);
+            String username;
+            try {
+                username = jwtService.extractUsernameFromAccess(token);
+            } catch (Exception e) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+                return;
+            }
 
-            // If the token is not blacklisted, username is extracted
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = context.getBean(MyUserDetailsService.class).loadUserByUsername(username);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                // Validate the token
-                if (jwtService.validateToken(token, userDetails)) {
-                    var authorities = jwtService.extractAuthorities(token);
+                if (jwtService.validateAccessToken(token, userDetails)) {
+                    var authorities = jwtService.extractAuthoritiesFromAccess(token);
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -67,7 +73,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private String extractTokenFromRequest(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            return authorizationHeader.substring(7); // Return the token without "Bearer "
+            return authorizationHeader.substring(7);
         }
         return null;
     }

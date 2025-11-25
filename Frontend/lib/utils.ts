@@ -2,6 +2,8 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import axios from 'axios';
 
+const baseURL = process.env.NEXT_PUBLIC_API_URL;
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -59,13 +61,15 @@ export const logoutApi = async () => {
 }
 
 
-
 export const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost/api',
+  baseURL: baseURL,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
-  },
+    'Accept': 'application/json'
+  }
 });
+
 
 axiosInstance.interceptors.request.use(
   (config) => {
@@ -89,3 +93,29 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export const login = async (username: string, password: string) => {
+  try {
+    const response = await axiosInstance.post('/api/login', {
+      username,
+      password,
+    }, {
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    });
+
+    if (response.status === 200) {
+      const { accessToken: token, expiresIn } = response.data;
+      const expirationTime = Date.now() + expiresIn * 1000;
+      sessionStorage.setItem('jwt_token', token);
+      sessionStorage.setItem('token_expiry', expirationTime.toString());
+    }
+    return response;
+  } catch (error) {
+    console.error('Error during login:', error);
+    throw error;
+  }
+};

@@ -4,6 +4,7 @@ import com.example.personal_finance_tracker.DTOs.UserDTO;
 import com.example.personal_finance_tracker.Models.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
 
@@ -14,7 +15,7 @@ public interface UserService {
     User updateUser(Long id, UserDTO userDTO);
     User deleteUser(Long id);
 
-    String VerifyUser(UserDTO userdto);
+    Map<String, String> VerifyUser(UserDTO userdto);
 
     User getUserByUsername(String username);
 }

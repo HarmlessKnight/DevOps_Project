@@ -1,0 +1,7 @@
+jwt:
+  access:
+    secret: DvDyjDUNJPmIm2iUCrMUK3nUazPCAy1Qn5Q0CTfPcIbHCIFOZHvnWtyNroA5y39S
+    expiration: 15m
+  refresh:
+    secret: n5Q0CTfPcIbHCIFOZHvnWtyNroA5y39SDvDyjDUNJPmIm2iUCrMUK3nUazPCAy1Q
+    expiration: 7d

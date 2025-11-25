@@ -7,7 +7,6 @@ import com.example.personal_finance_tracker.Models.User;
 import com.example.personal_finance_tracker.Repositories.RoleRepository;
 import com.example.personal_finance_tracker.Repositories.UserRepository;
 import com.example.personal_finance_tracker.Services.UserService;
-import com.example.personal_finance_tracker.Exceptions.InvalidUserException;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -105,7 +105,7 @@ public class UserServiceimpl implements UserService {
     }
 
     @Override
-    public String VerifyUser(UserDTO userdto) {
+    public Map<String, String> VerifyUser(UserDTO userdto) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userdto.getUsername(), userdto.getPassword())
@@ -115,12 +115,17 @@ public class UserServiceimpl implements UserService {
 
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-                return jwtService.generateToken(userDetails);
+                String access_token = jwtService.generateAccessToken(userDetails);
+                String refresh_token = jwtService.generateRefreshToken(userDetails);
+                return Map.of(
+                        "accessToken", access_token,
+                        "refreshToken", refresh_token
+                );
             } else {
-                return "Authentication failed for user: " + userdto.getUsername();
+                throw new RuntimeException("Authentication failed for user: " + userdto.getUsername());
             }
         } catch (Exception e) {
-            return "Failed to login user: " + userdto.getUsername() + ". Error: " + e.getMessage();
+            throw new RuntimeException("Failed to login user: " + userdto.getUsername() + ". Error: " + e.getMessage());
         }
     }
 

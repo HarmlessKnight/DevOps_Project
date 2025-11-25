@@ -1,0 +1,23 @@
+{
+    # Global options block
+    log {
+        output stdout
+        format console
+    }
+   
+}
+
+localhost {
+
+    # Tell Caddy to issue a self-signed certificate for localhost
+    # because it's not a public domain.
+    # In a production environment with a real domain, Caddy would
+    # automatically get a certificate from Let's Encrypt.
+    tls internal
+
+    # Reverse proxy API requests to the backend service
+    reverse_proxy /api/* http://localhost:8080
+
+    # Reverse proxy all other requests to the frontend service
+    reverse_proxy /* http://localhost:3000
+}

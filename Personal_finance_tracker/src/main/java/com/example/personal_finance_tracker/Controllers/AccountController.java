@@ -34,10 +34,10 @@ public class AccountController {
     }
 
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AccountDTO> getAccountById(@PathVariable Long id) {
+    @GetMapping("/{accountId}")
+    public ResponseEntity<AccountDTO> getAccountById(@PathVariable Long accountId) {
 
-        Accounts account = accountService.findById(id);
+        Accounts account = accountService.findById(accountId);
         SecurityUtils.CheckOwnership(account.getUser().getId());
         return ResponseEntity.ok(AccountMapper.toDTO(account));
 
@@ -56,9 +56,8 @@ public class AccountController {
         return ResponseEntity.ok(AccountMapper.toDTO(account));
     }
 
-    @GetMapping()
-    public List<AccountDTO> getUserAccounts() {
-        Long userId = SecurityUtils.getCurrentUserId();
+    @GetMapping("/{userId}")
+    public List<AccountDTO> getUserAccounts(@PathVariable Long userId) {
         return accountService.getAccountsWithUserId(userId).stream().map(AccountMapper::toDTO).collect(Collectors.toList());
     }
 

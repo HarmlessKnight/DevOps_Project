@@ -42,37 +42,37 @@ public class SecurityConfig {
                 .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
                     CorsConfiguration corsConfiguration = new CorsConfiguration();
                     corsConfiguration.setAllowCredentials(true);
-                    corsConfiguration.setAllowedOrigins(Arrays.asList(
-                            "http://localhost",
-                            "http://localhost:8080",
-                            "http://localhost:80",
-                            "http://localhost:3000"
+
+                    corsConfiguration.setAllowedOriginPatterns(Arrays.asList(
+                            "https://localhost*"
                     ));
-                    corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    corsConfiguration.setAllowedMethods(Arrays.asList(
+                            "GET", "POST", "PUT", "DELETE", "OPTIONS"
+                    ));
                     corsConfiguration.setAllowedHeaders(Arrays.asList(
                             "Content-Type",
-                            "Authorization",
-                            "Access-Control-Allow-Origin",
-                            "Access-Control-Allow-Credentials"
+                            "Authorization"
                     ));
                     corsConfiguration.setExposedHeaders(Arrays.asList(
-                            "Authorization",
-                            "Access-Control-Allow-Origin",
-                            "Access-Control-Allow-Credentials"
+                            "Authorization"
                     ));
                     corsConfiguration.setMaxAge(Duration.ofMinutes(10L));
                     return corsConfiguration;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Allow OPTIONS
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/login", "/api/register").permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().authenticated()
+                )
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
+
+
 
 
     @Bean
