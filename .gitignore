@@ -1,100 +1,62 @@
 # =============================
-# OS FILES
+# Environment / Secrets
 # =============================
-.DS_Store
-Thumbs.db
-
-# =============================
-# ENVIRONMENT / SECRETS
-# =============================
-.env
-.env.*
-*.env.local
+*.env
+*.env.*        # .env.local, .env.production, etc.
+*.key
+*.pem
+*.crt
+*.p12
+*.jks
 *.secret
 secrets/
 keys/
-*.pem
-*.key
-*.crt
-*.p12
-*.keystore
-*.jks
-
-# Spring Boot secret configs
-application.properties
-application.yml
-application.yaml
-
-# Kubernetes secret files
-k8s/secrets.yaml
-k8s/*secret*.yaml
-helm/*/values.local.yaml
+*.local        # local config files
+*.private
 
 # =============================
-# DATABASE / MYSQL
+# Config files
 # =============================
-*.sql               # local SQL dumps
-*.sql.gz
-mysql-data/         # local bind-mounted database
-db-data/
+*.yml
+*.yaml
+*.properties
+*.json         # optional if some config JSONs are sensitive
+config/
+configs/
 
 # =============================
-# LOGS
+# Logs
 # =============================
-logs/
 *.log
-spring.log
-debug.log
-npm-debug.log*
-yarn*.log
+logs/
+log/
 
 # =============================
-# SPRING BOOT (Java)
+# Build / Output
 # =============================
 target/
 build/
+dist/
 out/
 bin/
-*.class
-*.jar
-*.war
-*.iml
-
-# =============================
-# NEXT.JS (React)
-# =============================
 .next/
 node_modules/
-build/
-dist/
-.cache/
-package-lock.json
-
-# Next.js local env
-.env.local
-.env.development
-.env.production
-.env.test
 
 # =============================
-# DOCKER
+# Docker & Kubernetes
 # =============================
-docker-compose.override.yml
-docker-compose.local.yml
+*.dockerfile
+docker-compose*.yml
+docker-compose*.yaml
+docker/*.yml
+docker/*.yaml
+k8s/*.yml
+k8s/*.yaml
 *.pid
-*.tar  # exported docker images
+*.tar
 
 # =============================
-# KUBERNETES
-# =============================
-# Generated manifests or local-only configs
-k8s/generated/
-k8s/local/
-*.kubeconfig
-.kube/
-
-# =============================
-# IDE / EDITORS
+# IDE / Editor
 # =============================
 .vscode/
 .idea/
@@ -103,8 +65,7 @@ k8s/local/
 *.swo
 
 # =============================
-# PYTHON (if using scripts)
+# OS
 # =============================
-__pycache__/
-*.pyc
-venv/
+.DS_Store
+Thumbs.db
