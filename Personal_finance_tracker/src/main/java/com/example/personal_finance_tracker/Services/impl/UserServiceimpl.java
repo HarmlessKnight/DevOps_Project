@@ -4,6 +4,7 @@ import com.example.personal_finance_tracker.DTOs.UserDTO;
 import com.example.personal_finance_tracker.Exceptions.InvalidUserException;
 import com.example.personal_finance_tracker.Models.Role;
 import com.example.personal_finance_tracker.Models.User;
+import com.example.personal_finance_tracker.Models.UserPrincipal;
 import com.example.personal_finance_tracker.Repositories.RoleRepository;
 import com.example.personal_finance_tracker.Repositories.UserRepository;
 import com.example.personal_finance_tracker.Services.UserService;
@@ -105,7 +106,7 @@ public class UserServiceimpl implements UserService {
     }
 
     @Override
-    public Map<String, String> VerifyUser(UserDTO userdto) {
+    public Map<String, Object> VerifyUser(UserDTO userdto) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userdto.getUsername(), userdto.getPassword())
@@ -113,13 +114,14 @@ public class UserServiceimpl implements UserService {
 
             if (authentication.isAuthenticated()) {
 
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+                UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
 
-                String access_token = jwtService.generateAccessToken(userDetails);
-                String refresh_token = jwtService.generateRefreshToken(userDetails);
+                String access_token = jwtService.generateAccessToken(user);
+                String refresh_token = jwtService.generateRefreshToken(user);
                 return Map.of(
                         "accessToken", access_token,
-                        "refreshToken", refresh_token
+                        "refreshToken", refresh_token,
+                        "userId",user.getId()
                 );
             } else {
                 throw new RuntimeException("Authentication failed for user: " + userdto.getUsername());

@@ -15,7 +15,7 @@ public interface UserService {
     User updateUser(Long id, UserDTO userDTO);
     User deleteUser(Long id);
 
-    Map<String, String> VerifyUser(UserDTO userdto);
+    Map<String, Object> VerifyUser(UserDTO userdto);
 
     User getUserByUsername(String username);
 }

@@ -54,15 +54,17 @@ public class AuthenticationController {
             return ResponseEntity.ok(Map.of("message", "Already logged in", "redirect", "/api/dashboard"));
         }
 
-        Map<String, String> tokens;
+        Map<String, Object> tokens;
+
         try {
             tokens = userService.VerifyUser(userdto);
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", ex.getMessage()));
         }
 
-        String accessToken = tokens.get("accessToken");
-        String refreshToken = tokens.get("refreshToken");
+        String accessToken = (String) tokens.get("accessToken");
+        String refreshToken = (String) tokens.get("refreshToken");
+        Long userId = (Long) tokens.get("userId");
 
         ResponseCookie cookie = ResponseCookie.from("refresh_token", refreshToken)
                 .httpOnly(true)
@@ -78,7 +80,8 @@ public class AuthenticationController {
 
         return ResponseEntity.ok(Map.of(
                 "accessToken", accessToken,
-                "expiresIn", 900
+                "expiresIn", 900,
+                "UserId",userId
         ));
     }
 
